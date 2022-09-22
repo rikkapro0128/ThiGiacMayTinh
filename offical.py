@@ -1,7 +1,22 @@
 import cv2
 import mediapipe as mp
+import RPi.GPIO as GPIO
+
 mp_drawing = mp.solutions.drawing_utils
 mp_hands = mp.solutions.hands
+
+list_pin = [18, 23, 24, 25, 8, 7]
+
+GPIO.setmode(GPIO.BCM)
+
+for pin in list_pin:
+  GPIO.setup(pin, GPIO.OUT, initial=GPIO.LOW)
+
+def clearLed():
+  for pin in list_pin:
+    GPIO.output(pin, GPIO.LOW)
+
+clearLed()
 
 # For webcam input:
 cap = cv2.VideoCapture(0)
@@ -58,6 +73,11 @@ with mp_hands.Hands(
           fingerCount = fingerCount+1
         if handLandmarks[20][1] < handLandmarks[18][1]:     #Pinky
           fingerCount = fingerCount+1
+
+    # controll number led by index fingerCount
+    if fingerCount < 6:
+      clearLed()
+      GPIO.output(list_pin[fingerCount], GPIO.HIGH)
 
     cv2.putText(image, str(fingerCount), (50, 450), cv2.FONT_HERSHEY_SIMPLEX, 3, (255, 0, 0), 10)
 
