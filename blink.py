@@ -3,23 +3,24 @@ import time
 
 # Pin Definitions
 output_pin = 18  # BOARD pin 12, BCM pin 18
+list_pin = [18, 23, 24, 25, 8, 7]
 
 def main():
     # Pin Setup:
     # Board pin-numbering scheme
     GPIO.setmode(GPIO.BCM)
-    # set pin as an output pin with optional initial state of HIGH
-    GPIO.setup(output_pin, GPIO.OUT, initial=GPIO.HIGH)
-
-    print("Starting demo now! Press CTRL+C to exit")
-    curr_value = GPIO.HIGH
+    # set pin as an output
+    for pin in list_pin:
+        GPIO.setup(pin, GPIO.OUT, initial=GPIO.LOW)
+        
     try:
         while True:
             time.sleep(1)
-            # Toggle the output every second
-            print("Outputting {} to pin {}".format(curr_value, output_pin))
-            GPIO.output(output_pin, curr_value)
-            curr_value ^= GPIO.HIGH
+            for pin in list_pin:
+                GPIO.output(pin, GPIO.HIGH)
+            time.sleep(1)
+            for pin in list_pin:
+                GPIO.output(pin, GPIO.LOW)
     finally:
         GPIO.cleanup()
 
